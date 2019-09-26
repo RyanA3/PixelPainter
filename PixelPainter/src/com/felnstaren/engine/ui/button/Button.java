@@ -22,8 +22,8 @@ public class Button extends UIElement {
 	public void render(Renderer renderer) {
 		renderer.drawRect(x, y, width, height, getOutline());
 		renderer.fillRect(x, y, width, height, getColor());
-		renderer.line(x, y, x + width, y, 0xffEEEEEE);
-		renderer.line(x, y, x, y + height, 0xffEEEEEE);
+		renderer.line(x, y, x + width, y, 0xffEEEEEE, 1);
+		renderer.line(x, y, x, y + height, 0xffEEEEEE, 1);
 		renderer.setPixel(x, y, 0xffEEEEEE);
 		renderer.setPixel(x + width, y, 0xffBBBBBB);
 		renderer.setPixel(x, y + height, 0xffBBBBBB);

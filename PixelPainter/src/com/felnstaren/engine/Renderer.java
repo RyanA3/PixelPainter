@@ -159,29 +159,76 @@ public class Renderer {
 	
 	
 	
-	public void dot(int x, int y, int r, int color, int pw, int ph, int[] pixels) {
+	public void dot(int x, int y, int r, int color) {
 		//https://stackoverflow.com/questions/40779343/java-loop-through-all-pixels-in-a-2d-circle-with-center-x-y-and-radius
 		int r2 = r*r;
 		// iterate through all x-coordinates
 		for (int i = y-r; i <= y+r; i++) {
 		    // test upper half of circle, stopping when top reached
 		    for (int j = x; (j-x)*(j-x) + (i-y)*(i-y) <= r2; j--) {
-		        setPixel(j, i, color, pw, ph, pixels);
+		        setPixel(j, i, color, pixel_width, pixel_height, pixels);
 		    }
 		    // test bottom half of circle, stopping when bottom reached
 		    for (int j = x+1; (j-x)*(j-x) + (i-y)*(i-y) <= r2; j++) {
-		        setPixel(j, i, color, pw, ph, pixels);
+		        setPixel(j, i, color, pixel_width, pixel_height, pixels);
 		    }
 		}
 	}
+
 	
-	public void dot(int offX, int offY, int radius, int color) {
-		dot(offX, offY, radius, color, pixel_width, pixel_height, pixels);
+	public void circle(int x_center, int y_center, int r, int color, int thickness) {
+		int x = r, y = 0;
+		
+	    if (r > 0) 
+	    { 
+	    	setPixel(x_center + r, y_center, color);
+	    	setPixel(x_center, y_center + r, color);
+	    	setPixel(x_center - r, y_center, color);
+	    	setPixel(x_center, y_center - r, color);
+	    } 
+		
+		int P = 1 - r; 
+	    while (x > y) 
+	    {  
+	        y++; 
+	          
+	        // Mid-point is inside or on the perimeter 
+	        if (P <= 0) 
+	            P = P + 2*y + 1; 
+	              
+	        // Mid-point is outside the perimeter 
+	        else
+	        { 
+	            x--; 
+	            P = P + 2*y - 2*x + 1; 
+	        } 
+	          
+	        // All the perimeter points have already been printed 
+	        if (x < y) 
+	            break; 
+	          
+	        // Printing the generated point and its reflection 
+	        // in the other octants after translation 
+	        setPixel(x + x_center, y + y_center, color);
+	        setPixel(-x + x_center, y + y_center, color);
+	        setPixel(x + x_center, -y + y_center, color);
+	        setPixel(-x + x_center, -y + y_center, color);
+	          
+	        // If the generated point is on the line x = y then  
+	        // the perimeter points have already been printed 
+	        if (x != y) 
+	        { 
+	        	setPixel(y + y_center, x + x_center, color);
+	        	setPixel(-y + y_center, x + x_center, color);
+	        	setPixel(y + y_center, -x + x_center, color);
+	        	setPixel(-y + y_center, -x + x_center, color);
+	        } 
+	    }  
 	}
 	
 	
 	
-	public void line(int x0, int y0, int x1, int y1, int color, int pw, int ph, int[] pixels) {
+	public void line(int x0, int y0, int x1, int y1, int color, int width) {
 		int dx = Math.abs(x1 - x0);
 		int dy = Math.abs(y1 - y0);
 		
@@ -205,11 +252,8 @@ public class Renderer {
 				y0 += sy;
 			}
 			
-			setPixel(x0, y0, color, pw, ph, pixels);
+			if(width > 1) dot(x0, y0, width / 2, color);
+			else setPixel(x0, y0, color);
 		}
-	}
-	
-	public void line(int x1, int y1, int x2, int y2, int color) {
-		line(x1, y1, x2, y2, color, pixel_width, pixel_height, pixels);
 	}
 }
