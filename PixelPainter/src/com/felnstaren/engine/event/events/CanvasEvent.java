@@ -5,7 +5,7 @@ import com.felnstaren.engine.ui.canvas.Canvas;
 
 public class CanvasEvent extends Event {
 	
-	private Canvas canvas;
+	protected Canvas canvas;
 	
 	public CanvasEvent(Canvas canvas) {
 		super("CanvasEvent");

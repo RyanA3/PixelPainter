@@ -11,7 +11,7 @@ import com.felnstaren.engine.ui.canvas.BrushMode;
 
 public class BrushButtonListener extends Listener {
 	
-	private static List<BrushMode> cycle = Arrays.asList(BrushMode.FREEHAND, BrushMode.LINE);
+	private static List<BrushMode> cycle = Arrays.asList(BrushMode.FREEHAND, BrushMode.LINE, BrushMode.CIRCLE, BrushMode.FILL_CIRCLE);
 
 	private Brush brush;
 	

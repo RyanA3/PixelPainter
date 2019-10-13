@@ -25,12 +25,6 @@ public class Canvas extends UIElement {
 	}
 	
 	
-	
-	public void clear() {
-		for(int i = 0; i < pixels.length; i++) pixels[i] = 0xffF8F8F8;
-	}
-	
-	
 
 	
 	public int[] getPixels() {
