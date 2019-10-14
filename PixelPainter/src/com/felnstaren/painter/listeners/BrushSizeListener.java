@@ -8,7 +8,7 @@ import com.felnstaren.engine.gfx.Image;
 import com.felnstaren.engine.ui.button.Button;
 import com.felnstaren.painter.Options;
 
-public class TestListener extends Listener {
+public class BrushSizeListener extends Listener {
 
 	@EventMethod
 	public void onEvent1(ButtonPressEvent event) {

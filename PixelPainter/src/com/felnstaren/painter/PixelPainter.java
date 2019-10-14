@@ -14,12 +14,12 @@ import com.felnstaren.engine.ui.canvas.Canvas;
 import com.felnstaren.engine.ui.canvas.CanvasPainter;
 import com.felnstaren.engine.ui.canvas.UndoManager;
 import com.felnstaren.painter.engine_extension.ColorSelectorButton;
-import com.felnstaren.painter.listeners.BrushButtonListener;
-import com.felnstaren.painter.listeners.CanvasListener;
+import com.felnstaren.painter.listeners.BrushModeListener;
 import com.felnstaren.painter.listeners.CanvasOperationListener;
 import com.felnstaren.painter.listeners.ColorListener;
+import com.felnstaren.painter.listeners.KeybindListener;
 import com.felnstaren.painter.listeners.ResetListener;
-import com.felnstaren.painter.listeners.TestListener;
+import com.felnstaren.painter.listeners.BrushSizeListener;
 import com.felnstaren.painter.listeners.UndoButtonListener;
 
 public class PixelPainter extends AbstractApp {
@@ -42,23 +42,22 @@ public class PixelPainter extends AbstractApp {
 		this.canvas = new Canvas(0, 31, ac.getWidth(), ac.getHeight() - 31);
 		this.brush = new Brush(50, 50);
 		brush.setMode(BrushMode.FREEHAND);
-		
+
 		this.uman = new UndoManager();
-		
 		this.ehandler = new EventHandler();
-		
+		this.bhandler = new ButtonHandler(ehandler);
 		this.cpaint = new CanvasPainter(ehandler);
+		
 		cpaint.prime(canvas);
 		
-		ehandler.addListener(new TestListener());
-		ehandler.addListener(new CanvasListener());
+		ehandler.addListener(new BrushSizeListener());
 		ehandler.addListener(new ColorListener());
 		ehandler.addListener(new ResetListener(cpaint, canvas));
-		ehandler.addListener(new BrushButtonListener(brush));
+		ehandler.addListener(new BrushModeListener(brush));
 		ehandler.addListener(new CanvasOperationListener(uman));
 		ehandler.addListener(new UndoButtonListener(uman));
+		ehandler.addListener(new KeybindListener(uman));
 		
-		this.bhandler = new ButtonHandler(ehandler);
 		bhandler.addButton(new Button(2, 18, 30, 10, "brush_size_button", new Image("/resources/icons/bs1.png")));
 		bhandler.addButton(new Button(36, 18, 30, 10, "reset", new Image("/resources/icons/reset.png")));
 		bhandler.addButton(new Button(70, 18, 30, 10, "brush_mode_button", brush.getMode().getIcon()));
@@ -79,8 +78,8 @@ public class PixelPainter extends AbstractApp {
 
 	public void update(AppContainer ac, float delta_time) {
 		bhandler.update(ac);
-		
 		brush.update(ac, cpaint, canvas);
+		ehandler.update(ac.getInput());
 	}
 
 	public void render(AppContainer ac, Renderer renderer) {

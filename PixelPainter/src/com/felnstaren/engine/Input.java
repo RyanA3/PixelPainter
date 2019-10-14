@@ -142,4 +142,10 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
 	public int getScroll() {
 		return this.scroll;
 	}
+	
+	
+	
+	public boolean[] getKeyMap() {
+		return this.keys;
+	}
 }

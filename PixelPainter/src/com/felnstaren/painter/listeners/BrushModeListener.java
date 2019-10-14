@@ -9,13 +9,13 @@ import com.felnstaren.engine.event.events.ButtonPressEvent;
 import com.felnstaren.engine.ui.canvas.Brush;
 import com.felnstaren.engine.ui.canvas.BrushMode;
 
-public class BrushButtonListener extends Listener {
+public class BrushModeListener extends Listener {
 	
 	private static List<BrushMode> cycle = Arrays.asList(BrushMode.FREEHAND, BrushMode.LINE, BrushMode.CIRCLE, BrushMode.FILL_CIRCLE);
 
 	private Brush brush;
 	
-	public BrushButtonListener(Brush brush) {
+	public BrushModeListener(Brush brush) {
 		this.brush = brush;
 	}
 	

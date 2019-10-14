@@ -8,7 +8,7 @@ public class UndoManager {
 
 	private Stack<CanvasOperationEvent> undo_list;
 	private Stack<CanvasOperationEvent> redo_list;
-	private int max = 3;
+	private int max = 20;
 	
 	
 	public UndoManager() {
@@ -33,6 +33,9 @@ public class UndoManager {
 		operation.undo();
 		
 		redo_list.push(operation);
+		
+		System.out.println("undid last edit");
+		
 		trim();
 	}
 	
@@ -43,6 +46,9 @@ public class UndoManager {
 		operation.apply();
 		
 		undo_list.push(operation);
+		
+		System.out.println("redid last edit");
+		
 		trim();
 	}
 	

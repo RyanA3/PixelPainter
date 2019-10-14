@@ -4,6 +4,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.felnstaren.engine.Input;
+import com.felnstaren.engine.event.events.KeyDownEvent;
+import com.felnstaren.engine.event.events.KeyUpEvent;
+
 public class EventHandler {
 
 	private List<Listener> listeners;
@@ -37,6 +41,16 @@ public class EventHandler {
 					}
 				}
 			}
+		}
+	}
+	
+	
+	
+	
+	public void update(Input in) {
+		for(int k = 0; k < in.getKeyMap().length; k++) {
+			if(in.isKeyDown(k)) trigger(new KeyDownEvent(in.getKeyMap(), k));
+			if(in.isKeyUp(k)) trigger(new KeyUpEvent(in.getKeyMap(), k));
 		}
 	}
 }
