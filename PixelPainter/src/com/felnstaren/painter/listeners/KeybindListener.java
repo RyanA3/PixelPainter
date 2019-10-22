@@ -22,7 +22,15 @@ public class KeybindListener extends Listener {
 		if(!event.getKeyMap()[KeyEvent.VK_CONTROL]) return;
 		System.out.println("Control key down: " + KeyEvent.getKeyText(event.getKey()));
 		
-		if(event.getKey() == KeyEvent.VK_Z) uman.undoLast();
+		if(event.getKey() == KeyEvent.VK_Z) {
+			new java.util.Timer().schedule( 
+				new java.util.TimerTask() {
+					public void run() {
+						uman.undoLast();
+			        }
+			    }, 1000 
+			);
+		}
 	}
 	
 }

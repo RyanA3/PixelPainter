@@ -8,6 +8,7 @@ import com.felnstaren.engine.Input;
 import com.felnstaren.engine.Renderer;
 import com.felnstaren.engine.gfx.Image;
 import com.felnstaren.engine.ui.UIElement;
+import com.felnstaren.engine.ui.popup.PopupManager;
 import com.felnstaren.painter.Options;
 
 public class Brush extends UIElement {
@@ -23,11 +24,12 @@ public class Brush extends UIElement {
 	
 	
 	
-	public void update(AppContainer ac, CanvasPainter cpaint, Canvas canvas) {
+	public void update(AppContainer ac, CanvasPainter cpaint, Canvas canvas, PopupManager popman) {
 		Input in = ac.getInput();
 		x = in.getMouseX();
 		y = in.getMouseY();
 		
+		if(popman.isOneGrabbed()) return;
 		switch(mode) {
 			case FREEHAND: {
 				x2 = x1;
@@ -36,9 +38,9 @@ public class Brush extends UIElement {
 				y1 = y;
 				
 				if(!in.isButtonPressed(MouseEvent.BUTTON1)) break;
-				if(x < 0 || x >= ac.getWidth() || y < 0 || y >= ac.getHeight()) break;
+				if((x1 < 0 && x2 < 0) || (x1 >= ac.getWidth() && x2 >= ac.getWidth()) || (y1 < 0 && y2 < 0) || (y1 >= ac.getHeight() && y2 >= ac.getHeight())) break;
 					
-				if(canvas.isInside(x, y)) {
+				//if(canvas.isInside(x, y)) {
 					int offX1 = x1 - canvas.getX();
 					int offY1 = y1 - canvas.getY();
 					int offX2 = x2 - canvas.getX();
@@ -48,7 +50,7 @@ public class Brush extends UIElement {
 						if(Options.brush_size > 1) cpaint.dot(canvas, offX1, offY1, Options.brush_size / 2, Options.color);
 						else cpaint.setPixel(canvas, offX1, offY1, Options.color);
 					} else cpaint.line(canvas, offX1, offY1, offX2, offY2, Options.color, Options.brush_size);
-				}
+				//}
 				break;
 			}
 			case LINE: {
@@ -74,7 +76,6 @@ public class Brush extends UIElement {
 					int offY2 = y2 - canvas.getY();
 					
 					cpaint.circle(canvas, offX1, offY1, dist(offX1, offY1, offX2, offY2), Options.color, Options.brush_size);
-					cpaint.export(canvas);
 					reset();
 				}
 				
@@ -101,7 +102,14 @@ public class Brush extends UIElement {
 		if(in.isButtonDown(MouseEvent.BUTTON1)) cpaint.prime(canvas);
 	}
 	
+	
+	
 	public void render(Renderer renderer) {
+		renderEdit(renderer);
+		renderCursor(renderer);
+	}
+	
+	public void renderCursor(Renderer renderer) {
 		Image img = mode.getIcon();
 		
 		switch(mode) {
@@ -111,11 +119,30 @@ public class Brush extends UIElement {
 			}
 			case LINE: {
 				renderer.dot(x, y, 2, Options.color);
-				if(x1 != -1 && y1 != -1) renderer.line(x1, y1, x, y, Options.color, Options.brush_size);
 				break;
 			}
 			case CIRCLE: {
 				renderer.dot(x, y, 1, Options.color);
+				break;
+			}
+			case FILL_CIRCLE: {
+				renderer.dot(x, y, 1, Options.color);
+				break;
+			}
+			default: break;
+		}
+	}
+	
+	public void renderEdit(Renderer renderer) {
+		switch(mode) {
+			case FREEHAND: {
+				break;
+			}
+			case LINE: {
+				if(x1 != -1 && y1 != -1) renderer.line(x1, y1, x, y, Options.color, Options.brush_size);
+				break;
+			}
+			case CIRCLE: {
 				if(x1 != -1 && y1 != -1) {
 					renderer.line(x1, y1, x, y, Options.color, 1);
 					renderer.circle(x1, y1, dist(x1, y1, x, y), Options.color, Options.brush_size);
@@ -123,7 +150,6 @@ public class Brush extends UIElement {
 				break;
 			}
 			case FILL_CIRCLE: {
-				renderer.dot(x, y, 1, Options.color);
 				if(x1 != -1 && y1 != -1) {
 					renderer.line(x1, y1, x, y, Options.color, 1);
 					renderer.dot(x1, y1, dist(x1, y1, x, y), Options.color);
@@ -171,7 +197,7 @@ public class Brush extends UIElement {
 			}
 		} 
 		if(in.isButtonUp(MouseEvent.BUTTON1)) { 
-			if(x2 == -1 && y2 == -1) {
+			if(x1 != -1 && y1 != -1 && x2 == -1 && y2 == -1) {
 				if(x1 != -1 && y1 != -1 && stopout || !stopout) {
 					x2 = x;
 					y2 = y;

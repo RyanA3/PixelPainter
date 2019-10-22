@@ -24,9 +24,7 @@ public class Renderer {
 	
 	
 	public void clear() {
-		for(int i = 0; i < pixels.length; i++) {
-			pixels[i] = 0;
-		}
+		for(int i = 0; i < pixels.length; i++) pixels[i] = 0;
 	}
 	
 	public void process() {
@@ -56,6 +54,8 @@ public class Renderer {
 	}
 	
 	public void hardSetPixel(int x, int y, int value) {
+		if(x < 0 || x >= pixel_width || y < 0 || y >= pixel_height) return; //0xffff00ff is a color (255 red, 0 green, 255 blue), this lets it work as transparent
+		
 		pixels[x + y * pixel_width] = value;
 	}
 	

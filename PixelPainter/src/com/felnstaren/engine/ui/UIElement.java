@@ -1,5 +1,7 @@
 package com.felnstaren.engine.ui;
 
+import com.felnstaren.engine.Renderer;
+
 public abstract class UIElement {
 
 	protected int x, y, width, height;
@@ -10,6 +12,10 @@ public abstract class UIElement {
 		this.width = width;
 		this.height = height;
 	}
+	
+	
+	
+	public abstract void render(Renderer renderer);
 	
 	
 	
@@ -34,6 +40,11 @@ public abstract class UIElement {
 	}
 	
 	public void setY(int y) {
+		this.y = y;
+	}
+	
+	public void setPosition(int x, int y) {
+		this.x = x;
 		this.y = y;
 	}
 	

@@ -15,6 +15,9 @@ import com.felnstaren.engine.ui.button.radio.RadioButtonGroup;
 
 public class ButtonHandler {
 
+	private List<Button> remove;
+	private List<Button> add;
+	
 	private List<Button> buttons;
 	private List<RadioButtonGroup> groups;
 	
@@ -25,12 +28,20 @@ public class ButtonHandler {
 		
 		buttons = new ArrayList<Button>();
 		groups = new ArrayList<RadioButtonGroup>();
+		remove = new ArrayList<Button>();
+		add = new ArrayList<Button>();
 	}
 	
 	
 	
 	public void addButton(Button button) {
-		buttons.add(button);
+		add.add(button);
+	}
+	
+	public void removeButton(String name) {
+		for(int i = 0; i < buttons.size(); i++) {
+			if(buttons.get(i).getName().equals(name)) remove.add(buttons.get(i));
+		}
 	}
 	
 	public void addRadioGroup(RadioButtonGroup group) {
@@ -47,9 +58,14 @@ public class ButtonHandler {
 		int my = ac.getInput().getMouseY();
 		
 		for(Button button : buttons) {
+			if(button.isPressed() && ac.getInput().isButtonUp(MouseEvent.BUTTON1) && !(button instanceof RadioButton)) {
+				button.setPressed(false);
+				if(!button.isPressed()) ehand.trigger(new ButtonReleaseEvent(button));
+			}
+			
 			if(!button.isInside(mx, my)) continue;
 			
-			if(!button.isPressed() && ac.getInput().isButtonPressed(MouseEvent.BUTTON1)) {
+			if(!button.isPressed() && ac.getInput().isButtonDown(MouseEvent.BUTTON1)) {
 				if(button instanceof RadioButton) {
 					RadioButton rbutton = (RadioButton) button;
 					
@@ -63,10 +79,18 @@ public class ButtonHandler {
 					if(button.isPressed()) 	ehand.trigger(new ButtonPressEvent(button));
 				}
 			}
-			else if(button.isPressed() && ac.getInput().isButtonUp(MouseEvent.BUTTON1) && !(button instanceof RadioButton)) {
-				button.setPressed(false);
-				if(!button.isPressed()) ehand.trigger(new ButtonReleaseEvent(button));
-			}
+		}
+		
+		if(!remove.isEmpty()) {
+			System.out.println("removing queued buttons");
+			buttons.removeAll(remove);
+			remove.clear();
+		}
+		
+		if(!add.isEmpty()) {
+			System.out.println("adding queued buttons");
+			buttons.addAll(add);
+			add.clear();
 		}
 	}
 	
